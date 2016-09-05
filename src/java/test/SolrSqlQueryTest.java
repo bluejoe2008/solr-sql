@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +11,6 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
-import org.apache.calcite.adapter.solr.SolrSchema;
-import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
@@ -27,20 +24,7 @@ public class SolrSqlQueryTest
 	@BeforeClass
 	public static void setup() throws Exception
 	{
-		setupSolrCollection();
-		setupSqlSource();
-	}
-
-	private static void setupSqlSource() throws ClassNotFoundException,
-			SQLException
-	{
-		Class.forName("org.apache.calcite.jdbc.Driver");
-		Properties info = new Properties();
-		info.setProperty("lex", "JAVA");
-		Connection connection = DriverManager.getConnection("jdbc:calcite:",
-				info);
-		registerSchema(connection);
-		connection.close();
+		//setupSolrCollection();
 	}
 
 	private static void setupSolrCollection() throws SolrServerException,
@@ -69,24 +53,31 @@ public class SolrSqlQueryTest
 	@Test
 	public void test() throws Exception
 	{
-		Assert.assertEquals(3, query("select * from solr.docs limit 10").size());
-		Assert.assertEquals(1, query("select * from solr.docs where age<35").size());
-		Assert.assertEquals(1, query("select * from solr.docs where age>35").size());
-		Assert.assertEquals(2, query("select * from solr.docs where age>=35").size());
-		Assert.assertEquals(2, query("select * from solr.docs where age<=35").size());
-		Assert.assertEquals(2, query("select * from solr.docs where not (age>35)").size());
-		Assert.assertEquals(1, query("select * from solr.docs where age>35 and name='bluejoe'").size());
-		Assert.assertEquals(2, query("select * from solr.docs where not (age>35 and name='bluejoe')").size());
-		Assert.assertEquals(2, query("select * from solr.docs where age>35 or name='even'").size());
+		Assert.assertEquals(1,
+				query("select * from docs where age>35 and name='bluejoe'")
+						.size());
+		Assert.assertEquals(3, query("select * from docs limit 10").size());
+		Assert.assertEquals(1, query("select * from docs where age<35").size());
+		Assert.assertEquals(1, query("select * from docs where age>35").size());
+		Assert.assertEquals(2, query("select * from docs where age>=35").size());
+		Assert.assertEquals(2, query("select * from docs where age<=35").size());
+		Assert.assertEquals(2, query("select * from docs where not (age>35)")
+				.size());
+		Assert.assertEquals(
+				2,
+				query(
+						"select * from docs where not (age>35 and name='bluejoe')")
+						.size());
+		Assert.assertEquals(2,
+				query("select * from docs where age>35 or name='even'").size());
 	}
 
 	public List<Map<String, Object>> query(String sql) throws Exception
 	{
 		Properties info = new Properties();
 		info.setProperty("lex", "JAVA");
-		Connection connection = DriverManager.getConnection("jdbc:calcite:",
+		Connection connection = DriverManager.getConnection("jdbc:calcite:model=src/java/test/model.json",
 				info);
-		registerSchema(connection);
 
 		Statement statement = connection.createStatement();
 
@@ -112,17 +103,5 @@ public class SolrSqlQueryTest
 
 		System.out.println(rows);
 		return rows;
-	}
-
-	private static void registerSchema(Connection connection)
-	{
-		Properties props = new Properties();
-		props.put("columns", "id integer, name char, age integer");
-		props.put("columnMapping", "name->name_s, age->age_i");
-		// props.put("solrZkHosts", "bluejoe1:9983");
-		props.put("solrServerURL", _solrServerURL);
-		props.put("solrCollection", "collection1");
-		SolrSchema.create(((CalciteConnection) connection).getRootSchema(),
-				"solr", props);
 	}
 }

@@ -1,0 +1,26 @@
+{
+  version: '1.0',
+  defaultSchema: 'solr',
+  schemas:
+  [
+    {
+      name: 'solr',
+      tables:
+      [
+        {
+          name: 'docs',
+          type: 'custom',
+          factory: 'org.apache.calcite.adapter.solr.SolrTableFactory',
+          operand:
+          {
+            solrServerURL: 'http://bluejoe1:8983/solr/collection1',
+            solrCollection: 'collection1',
+            //solrZkHosts: 'bluejoe1:9983',
+            columns:'id integer, name char, age integer',
+            columnMapping: 'name->name_s, age->age_i'
+          }
+        }
+      ]
+    }
+  ]
+}

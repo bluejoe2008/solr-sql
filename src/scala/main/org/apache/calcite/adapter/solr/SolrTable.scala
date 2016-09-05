@@ -22,7 +22,7 @@ import org.apache.solr.client.solrj.SolrClient
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.common.SolrDocument
 
-class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], columnMapping: Map[String, String], options: Map[String, String]) extends AbstractTable
+class SolrTable(solrClientFactory: SolrClientFactory, columns: Map[String, SqlTypeName], columnMapping: Map[String, String], options: Map[String, String]) extends AbstractTable
 		with ScannableTable with FilterableTable {
 	val logger = Logger.getLogger(this.getClass);
 	val pageSize = Integer.parseInt(options.getOrDefault("pageSize", "50"));
@@ -31,7 +31,7 @@ class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], colum
 		{
 			val solrQuery = new SolrQuery;
 			solrQuery.setQuery("*:*");
-			Linq4j.asEnumerable(new SolrQueryResults(solrClient, solrQuery, pageSize));
+			Linq4j.asEnumerable(new SolrQueryResults(solrClientFactory, solrQuery, pageSize));
 		}
 
 	override def getRowType(typeFactory: RelDataTypeFactory) =
@@ -42,7 +42,7 @@ class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], colum
 		{
 			logger.debug(s"filters: $filters");
 			val solrQuery = buildSolrQuery(filters);
-			Linq4j.asEnumerable(new SolrQueryResults(solrClient, solrQuery, pageSize));
+			Linq4j.asEnumerable(new SolrQueryResults(solrClientFactory, solrQuery, pageSize));
 		};
 
 	def buildEmptySolrQuery(): SolrQuery = {
@@ -62,7 +62,7 @@ class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], colum
 		solrQuery
 	}
 
-	class SolrQueryResultsIterator(solrClient: SolrClient, solrQuery: SolrQuery, pageSize: Int = 20) extends java.util.Iterator[Array[Object]] {
+	class SolrQueryResultsIterator(solrClientFactory: SolrClientFactory, solrQuery: SolrQuery, pageSize: Int = 20) extends java.util.Iterator[Array[Object]] {
 		var startOfCurrentPage = 0;
 		var rowIteratorWithinCurrentPage: java.util.Iterator[Array[Object]] = null;
 		var totalCountOfRows = -1L;
@@ -109,7 +109,7 @@ class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], colum
 				mySolrQuery.set("rows", pageSize);
 				startOfCurrentPage += pageSize;
 				logger.debug(s"executing solr query: $mySolrQuery");
-				val rsp = solrClient.query(mySolrQuery);
+				val rsp = solrClientFactory.getClient().query(mySolrQuery);
 				val docs = rsp.getResults();
 				totalCountOfRows = docs.getNumFound();
 				logger.debug(s"numFound: $totalCountOfRows");
@@ -132,8 +132,8 @@ class SolrTable(solrClient: SolrClient, columns: Map[String, SqlTypeName], colum
 		}
 	}
 
-	class SolrQueryResults(solrClient: SolrClient, solrQuery: SolrQuery, pageSize: Int) extends java.lang.Iterable[Array[Object]] {
-		def iterator() = new SolrQueryResultsIterator(solrClient, solrQuery, pageSize)
+	class SolrQueryResults(solrClientFactory: SolrClientFactory, solrQuery: SolrQuery, pageSize: Int) extends java.lang.Iterable[Array[Object]] {
+		def iterator() = new SolrQueryResultsIterator(solrClientFactory, solrQuery, pageSize)
 	}
 }
 

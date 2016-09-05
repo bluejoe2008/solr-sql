@@ -6,15 +6,20 @@ import org.apache.calcite.rex.RexLiteral
 import org.apache.calcite.rex.RexNode
 import org.apache.calcite.sql.SqlKind
 import org.apache.log4j.Logger
+import scala.collection.JavaConversions
+import java.util.Properties
+import org.apache.calcite.sql.fun.SqlCastFunction
 
 trait SolrFilter {
 	def toSolrQueryString(): String;
 }
 
 class SqlFilter2SolrFilterTranslator(columnMapping: Map[String, String]) {
+	def this(columnMapping: Properties) = this(JavaConversions.propertiesAsScalaMap(columnMapping).toMap);
+
 	val logger = Logger.getLogger(this.getClass);
 
-	def translateColumn(ref: RexInputRef): String = {
+	private def translateColumn(ref: RexInputRef): String = {
 		val sqlColumnName: String = columnMapping.keys.toSeq(ref.getIndex - 1);
 		columnMapping.getOrElse(sqlColumnName, sqlColumnName);
 	}
@@ -23,11 +28,25 @@ class SqlFilter2SolrFilterTranslator(columnMapping: Map[String, String]) {
 		processUnrecognied(processNOT(translateSqlFilter2SolrFilter(node)))
 	}
 
-	def translateSqlFilter2SolrFilter(node: RexNode) = {
+	private def trimColumnCast(node: RexNode) = {
+		node match {
+			case call: RexCall ⇒
+				(call.op, call.operands.get(0)) match {
+					case (_: SqlCastFunction, ref: RexInputRef) ⇒
+						logger.debug(s"simplify $node => $ref");
+						ref;
+					case _ ⇒ call;
+				}
+
+			case _ ⇒ node
+		}
+	}
+
+	private def translateSqlFilter2SolrFilter(node: RexNode) = {
 		node match {
 			case _: RexCall ⇒
-				val left = node.asInstanceOf[RexCall].operands.get(0);
-				val right = if (node.asInstanceOf[RexCall].operands.size() > 1) { node.asInstanceOf[RexCall].operands.get(1); } else { null; }
+				val left = trimColumnCast(node.asInstanceOf[RexCall].operands.get(0));
+				val right = if (node.asInstanceOf[RexCall].operands.size() > 1) { trimColumnCast(node.asInstanceOf[RexCall].operands.get(1)); } else { null; }
 
 				(node.getKind, left, right) match {
 					case (SqlKind.AND, _, _) ⇒ new AndSolrFilter(translate(left), translate(right));
@@ -94,7 +113,7 @@ class UnrecognizedSolrFilter extends SolrFilter {
 
 case class AndSolrFilter(left: SolrFilter, right: SolrFilter) extends SolrFilter {
 	override def toSolrQueryString() = {
-		s"($left.toSolrQueryString) AND ($right.toSolrQueryString)";
+		s"(${left.toSolrQueryString}) AND (${right.toSolrQueryString})";
 	}
 }
 
@@ -106,7 +125,7 @@ case class NotSolrFilter(left: SolrFilter) extends SolrFilter {
 
 case class OrSolrFilter(left: SolrFilter, right: SolrFilter) extends SolrFilter {
 	override def toSolrQueryString() = {
-		s"($left.toSolrQueryString) OR ($right.toSolrQueryString)";
+		s"(${left.toSolrQueryString}) OR (${right.toSolrQueryString})";
 	}
 }
 

@@ -50,13 +50,13 @@ below shows the example schema definition file model.json:
 		]
 	}
 	
-this defines a custom table named 'docs', users can define arguments:
+this defines a custom table named 'docs', below shows what arguments can be defined in the :
 
 * solrServerURL: solr server url, e.g. 'http://bluejoe1:8983/solr/collection1'
 * solrCollection: collection name, e.g. 'collection1'
 * solrZkHosts: zookeeper hosts employed by solr cloud, e.g. 'bluejoe1:9983'
-* columns: column definition, comma seperated column definiton in format <columnName columnTypeName>, e.g. 'id integer, name char, age integer',
-* columnMapping: tells real names of fields in solr document for each column, e.g. 'name->name_s, age->age_i'
+* columns: comma seperated column definitons, each column is describled in format <columnName columnTypeName>, e.g. 'id integer, name char, age integer',
+* columnMapping: tells real names of fields in solr document for each column, each column mapping is describled in format <columnName->fieldNameInSolrDocument>, e.g. 'name->name_s, age->age_i'
   
 
 

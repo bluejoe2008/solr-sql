@@ -22,33 +22,41 @@ example codes:
 
 below shows the example schema definition file model.json:
 
-  {
-    version: '1.0',
-    defaultSchema: 'solr',
-    schemas:
-    [
-      {
-        name: 'solr',
-        tables:
-        [
-          {
-            name: 'docs',
-            type: 'custom',
-            factory: 'org.apache.calcite.adapter.solr.SolrTableFactory',
-            operand:
-            {
-              solrServerURL: 'http://bluejoe1:8983/solr/collection1',
-              solrCollection: 'collection1',
-              //solrZkHosts: 'bluejoe1:9983',
-              columns:'id integer, name char, age integer',
-              columnMapping: 'name->name_s, age->age_i'
-            }
-          }
-        ]
-      }
-    ]
-  }
-  
+
+	{
+		version: '1.0',
+		defaultSchema: 'solr',
+		schemas:
+		[
+			{
+				name: 'solr',
+				tables:
+				[
+					{
+						name: 'docs',
+						type: 'custom',
+						factory: 'org.apache.calcite.adapter.solr.SolrTableFactory',
+						operand:
+						{
+							solrServerURL: 'http://bluejoe1:8983/solr/collection1',
+							solrCollection: 'collection1',	
+							//solrZkHosts: 'bluejoe1:9983',
+							columns:'id integer, name char, age integer',
+							columnMapping: 'name->name_s, age->age_i'
+						}
+					}
+				]
+			}
+		]
+	}
+	
+this defines a custom table named 'docs', users can define arguments:
+
+* solrServerURL: solr server url, e.g. 'http://bluejoe1:8983/solr/collection1'
+* solrCollection: collection name, e.g. 'collection1'
+* solrZkHosts: zookeeper hosts employed by solr cloud, e.g. 'bluejoe1:9983'
+* columns: column definition, comma seperated column definiton in format <columnName columnTypeName>, e.g. 'id integer, name char, age integer',
+* columnMapping: tells real names of fields in solr document for each column, e.g. 'name->name_s, age->age_i'
   
 
 

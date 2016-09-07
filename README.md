@@ -2,7 +2,17 @@
 
 solr-sql provides sql interfaces for solr cloud, by which developers can operate on solr cloud via JDBC protocols.
 
-On the same time, it is an Calcite adapter for solr(see http://calcite.apache.org).
+On the same time, solr-sql is an Calcite adapter for solr(see http://calcite.apache.org).
+
+# about project
+
+solr-sql is written in Scala, which generates java class files in JVM.
+
+So, if you are a Java developer, do not hesitate to choose solr-sql, because it is easy to be referenced by Java codes. Also the test cases are written in Java(see https://github.com/bluejoe2008/solr-sql/blob/master/src/java/test/SolrSqlQueryTest.java).
+
+If you are interested in source codes, manybe you need install a ScalaIDE(http://scala-ide.org/), or scala plugins for eclipse.
+
+solr-sql uses Maven to manage libary dependencies, it is a normal Maven project.
 
 # JDBC client codes
 
@@ -50,7 +60,7 @@ below shows the example schema definition file model.json:
 		]
 	}
 	
-this defines a custom table named 'docs', below shows what arguments can be defined in the :
+this defines a custom table named 'docs', below shows what arguments can be defined in the operand field:
 
 * solrServerURL: solr server url, e.g. 'http://bluejoe1:8983/solr/collection1'
 * solrCollection: collection name, e.g. 'collection1'

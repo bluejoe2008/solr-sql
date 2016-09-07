@@ -66,10 +66,9 @@ this defines a custom table named 'docs', several arguments can be defined in th
 * solrServerURL: solr server url, e.g. 'http://bluejoe1:8983/solr/collection1'
 * solrCollection: collection name, e.g. 'collection1'
 * solrZkHosts: zookeeper hosts employed by solr cloud, e.g. 'bluejoe1:9983'
-* columns: comma seperated column definitions, each column is describled in format <columnName columnTypeName>, e.g. 'id integer, name char, age integer',
-* columnMapping: tells real names of fields in solr document for each column, each column mapping is describled in format <columnName->fieldNameInSolrDocument>, e.g. 'name->name_s, age->age_i'
-  
-
+* columns: comma seperated column definitions, each column is describled in format 'columnName columnTypeName', e.g. 'id integer, name char, age integer'
+* columnMapping: tells real names of fields in solr document for each column, each column mapping is describled in format 'columnName->fieldNameInSolrDocument', e.g. 'name->name_s, age->age_i'
+* pageSize: solr-sql does not retrieve all results on querying, for example, it only retrieves first 50 results, if the sql engine requests for more, it retrieves for next 50 results. pageSize defines the size of each query, default value is 50.
 
 
 

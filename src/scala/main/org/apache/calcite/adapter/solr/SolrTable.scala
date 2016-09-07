@@ -25,7 +25,7 @@ import org.apache.solr.common.SolrDocument
 class SolrTable(solrClientFactory: SolrClientFactory, columns: Map[String, SqlTypeName], columnMapping: Map[String, String], options: Map[String, String]) extends AbstractTable
 		with ScannableTable with FilterableTable {
 	val logger = Logger.getLogger(this.getClass);
-	val pageSize = Integer.parseInt(options.getOrDefault("pageSize", "50"));
+	val pageSize = SolrTableConf.parseInt(options, SolrTableConf.PAGE_SIZE, "50");
 
 	override def scan(root: DataContext) =
 		{

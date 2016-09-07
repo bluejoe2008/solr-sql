@@ -19,18 +19,18 @@ import org.junit.Test;
 
 public class SolrSqlQueryTest
 {
-	static String _solrServerURL = "http://bluejoe1:8983/solr/collection1";
-
 	@BeforeClass
 	public static void setup() throws Exception
 	{
-		//setupSolrCollection();
+		//writes some documents for test
+		setupSolrDocuments();
 	}
 
-	private static void setupSolrCollection() throws SolrServerException,
+	private static void setupSolrDocuments() throws SolrServerException,
 			IOException
 	{
-		HttpSolrClient client = new HttpSolrClient(_solrServerURL);
+		HttpSolrClient client = new HttpSolrClient(
+				"http://bluejoe1:8983/solr/collection1");
 		client.deleteByQuery("*:*");
 		insertDocument(client, 1, "bluejoe", 38);
 		insertDocument(client, 2, "even", 35);
@@ -76,8 +76,8 @@ public class SolrSqlQueryTest
 	{
 		Properties info = new Properties();
 		info.setProperty("lex", "JAVA");
-		Connection connection = DriverManager.getConnection("jdbc:calcite:model=src/java/test/model.json",
-				info);
+		Connection connection = DriverManager.getConnection(
+				"jdbc:calcite:model=src/java/test/model.json", info);
 
 		Statement statement = connection.createStatement();
 

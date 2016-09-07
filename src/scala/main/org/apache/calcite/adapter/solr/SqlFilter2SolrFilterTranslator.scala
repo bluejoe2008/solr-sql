@@ -10,10 +10,16 @@ import scala.collection.JavaConversions
 import java.util.Properties
 import org.apache.calcite.sql.fun.SqlCastFunction
 
+/**
+ * a solr filter is abstraction of solr query filter
+ */
 trait SolrFilter {
 	def toSolrQueryString(): String;
 }
 
+/**
+ * SqlFilter2SolrFilterTranslator translates a sql filter into a solr filter
+ */
 class SqlFilter2SolrFilterTranslator(columnMapping: Map[String, String]) {
 	def this(columnMapping: Properties) = this(JavaConversions.propertiesAsScalaMap(columnMapping).toMap);
 
@@ -79,6 +85,9 @@ class SqlFilter2SolrFilterTranslator(columnMapping: Map[String, String]) {
 			case OrSolrFilter(left, right) ⇒ new OrSolrFilter(processNOT(left), processNOT(right));
 			case NotSolrFilter(left) ⇒ {
 				left match {
+					case AndSolrFilter(left, right) ⇒ new OrSolrFilter(processNOT(new NotSolrFilter(left)), processNOT(new NotSolrFilter(right)));
+					case OrSolrFilter(left, right) ⇒ new AndSolrFilter(processNOT(new NotSolrFilter(left)), processNOT(new NotSolrFilter(right)));
+					case NotSolrFilter(left) ⇒ processNOT(left);
 					case GtSolrFilter(column, value) ⇒ new LeSolrFilter(column, value);
 					case GeSolrFilter(column, value) ⇒ new LtSolrFilter(column, value);
 					case LtSolrFilter(column, value) ⇒ new GeSolrFilter(column, value);

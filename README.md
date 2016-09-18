@@ -2,7 +2,7 @@
 
 solr-sql provides sql interfaces for solr cloud(http://lucene.apache.org/solr/), by which developers can operate on solr cloud via JDBC protocols.
 
-On the same time, solr-sql is an Calcite adapter for solr(see http://calcite.apache.org).
+On the same time, solr-sql is an Apache Calcite(see http://calcite.apache.org) adapter for solr.
 
 # about project
 

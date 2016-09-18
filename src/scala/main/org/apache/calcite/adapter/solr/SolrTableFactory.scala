@@ -37,14 +37,11 @@ class SolrTableFactory extends TableFactory[SolrTable] {
 		val definedColumnMapping = SolrTableConf.parseMap(args, SolrTableConf.COLUMN_MAPPING);
 		logger.debug(s"defined column mapping: $definedColumnMapping");
 
-		val columnMappingBuffer = collection.mutable.Map[String, String]();
-		columns.keys.foreach(x ⇒ if (!definedColumnMapping.contains(x)) { columnMappingBuffer += (x -> x); });
-
-		val columnMapping = definedColumnMapping ++ columnMappingBuffer;
+		val filledColumnMapping = columns.map(x ⇒ (x._1, definedColumnMapping.getOrElse(x._1, x._1)));
 
 		//options="pageSize:20,solrZkHosts=10.0.71.14:2181,10.0.71.17:2181,10.0.71.38:2181"
 		val options = args;
-		
+
 		//a singleton of solr client
 		val solrClientFactory = new SolrClientFactory {
 			val clients = ArrayBuffer[SolrClient]();
@@ -70,6 +67,6 @@ class SolrTableFactory extends TableFactory[SolrTable] {
 			}
 		}
 
-		new SolrTable(solrClientFactory, columns, columnMapping, options);
+		new SolrTable(solrClientFactory, columns, filledColumnMapping, options);
 	}
 }

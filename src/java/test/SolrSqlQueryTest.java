@@ -22,7 +22,7 @@ public class SolrSqlQueryTest
 	@BeforeClass
 	public static void setup() throws Exception
 	{
-		//writes some documents for test
+		// writes some documents for test
 		setupSolrDocuments();
 	}
 
@@ -51,23 +51,63 @@ public class SolrSqlQueryTest
 	}
 
 	@Test
-	public void test() throws Exception
+	public void test1() throws Exception
 	{
 		Assert.assertEquals(1,
 				query("select * from docs where age>35 and name='bluejoe'")
 						.size());
+	}
+
+	@Test
+	public void test2() throws Exception
+	{
 		Assert.assertEquals(3, query("select * from docs limit 10").size());
+	}
+
+	@Test
+	public void test3() throws Exception
+	{
 		Assert.assertEquals(1, query("select * from docs where age<35").size());
+	}
+
+	@Test
+	public void test4() throws Exception
+	{
 		Assert.assertEquals(1, query("select * from docs where age>35").size());
+	}
+
+	@Test
+	public void test5() throws Exception
+	{
 		Assert.assertEquals(2, query("select * from docs where age>=35").size());
+	}
+
+	@Test
+	public void test6() throws Exception
+	{
 		Assert.assertEquals(2, query("select * from docs where age<=35").size());
+	}
+
+	@Test
+	public void test7() throws Exception
+	{
 		Assert.assertEquals(2, query("select * from docs where not (age>35)")
 				.size());
+	}
+
+	@Test
+	public void test8() throws Exception
+	{
 		Assert.assertEquals(
 				2,
 				query(
 						"select * from docs where not (age>35 and name='bluejoe')")
 						.size());
+	}
+
+	@Test
+	public void test9() throws Exception
+	{
 		Assert.assertEquals(2,
 				query("select * from docs where age>35 or name='even'").size());
 	}

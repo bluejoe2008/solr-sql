@@ -57,7 +57,7 @@ class SolrTable(solrClientFactory: SolrClientFactory, columns: Map[String, SqlTy
 		if (filters.isEmpty())
 			solrQuery.setQuery("*:*");
 		else
-			solrQuery.setQuery(new SqlFilter2SolrFilterTranslator(columnMapping).translate(filters.get(0)).toSolrQueryString())
+			solrQuery.setQuery(new SqlFilter2SolrFilterTranslator(columnMapping.values.toArray).translate(filters.get(0)).toSolrQueryString())
 
 		solrQuery
 	}

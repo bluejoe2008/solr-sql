@@ -20,14 +20,12 @@ trait SolrFilter {
 /**
  * SqlFilter2SolrFilterTranslator translates a sql filter into a solr filter
  */
-class SqlFilter2SolrFilterTranslator(columnMapping: Map[String, String]) {
-	def this(columnMapping: Properties) = this(JavaConversions.propertiesAsScalaMap(columnMapping).toMap);
+class SqlFilter2SolrFilterTranslator(solrFieldNames: Array[String]) {
 
 	val logger = Logger.getLogger(this.getClass);
 
 	private def translateColumn(ref: RexInputRef): String = {
-		val sqlColumnName: String = columnMapping.keys.toSeq(ref.getIndex - 1);
-		columnMapping.getOrElse(sqlColumnName, sqlColumnName);
+		solrFieldNames(ref.getIndex);
 	}
 
 	def translate(node: RexNode): SolrFilter = {

@@ -77,6 +77,13 @@ public class SqlTranslatorTest
 				trans("select * from docs where NOT (age>20 and name<>'bluejoe')"));
 	}
 
+	@Test
+	public void test7() throws Exception
+	{
+		Assert.assertEquals("name_s:bluejoe*",
+				trans("select * from docs where name like 'bluejoe%'"));
+	}
+
 	private String trans(String sql) throws Exception
 	{
 		Properties info = new Properties();

@@ -67,6 +67,8 @@ class SqlFilter2SolrFilterTranslator(solrFieldNames: Array[String]) {
 					case (SqlKind.LESS_THAN_OR_EQUAL, lit: RexLiteral, ref: RexInputRef) ⇒ new GtSolrFilter(translateColumn(ref), lit.getValue2);
 					case (SqlKind.EQUALS, lit: RexLiteral, ref: RexInputRef) ⇒ new EqualsSolrFilter(translateColumn(ref), lit.getValue2);
 					case (SqlKind.EQUALS, ref: RexInputRef, lit: RexLiteral) ⇒ new EqualsSolrFilter(translateColumn(ref), lit.getValue2);
+					case (SqlKind.LIKE, lit: RexLiteral, ref: RexInputRef) ⇒ new LikeSolrFilter(translateColumn(ref), lit.getValue2);
+					case (SqlKind.LIKE, ref: RexInputRef, lit: RexLiteral) ⇒ new LikeSolrFilter(translateColumn(ref), lit.getValue2);
 					case (SqlKind.NOT_EQUALS, lit: RexLiteral, ref: RexInputRef) ⇒ new NotEqualsSolrFilter(translateColumn(ref), lit.getValue2);
 					case (SqlKind.NOT_EQUALS, ref: RexInputRef, lit: RexLiteral) ⇒ new NotEqualsSolrFilter(translateColumn(ref), lit.getValue2);
 					case (SqlKind.NOT, _, null) ⇒ new NotSolrFilter(translate(left))
@@ -157,6 +159,13 @@ case class IsNullSolrFilter(attributeName: String) extends SolrFilter {
 case class EqualsSolrFilter(attributeName: String, value: Object) extends SolrFilter {
 	override def toSolrQueryString() = {
 		s"$attributeName:$value";
+	}
+}
+
+case class LikeSolrFilter(attributeName: String, value: Object) extends SolrFilter {
+	val value2 = value.asInstanceOf[String].replaceAllLiterally("%", "*").replaceAll("_", "?");
+	override def toSolrQueryString() = {
+		s"$attributeName:$value2";
 	}
 }
 

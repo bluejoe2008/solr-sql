@@ -62,6 +62,7 @@
 		</dependency>
 	</dependencies>
 	<profiles>
+		<!-- mvn clean deploy -P release -->
 		<profile>
 			<id>release</id>
 			<build>

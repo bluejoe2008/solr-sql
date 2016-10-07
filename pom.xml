@@ -1,9 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>solr-sql</groupId>
+	<groupId>com.github.bluejoe2008</groupId>
 	<artifactId>solr-sql</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.9</version>
+	<description>SQL interface over Solr Cloud.</description>
+	<url>https://github.com/bluejoe2008/solr-sql</url>
+	<licenses>
+		<license>
+			<name>BSD 2-clause License</name>
+			<url>http://opensource.org/licenses/BSD-2-Clause</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>shenzhihong</name>
+			<email>bluejoe2008@gmail.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git@github.com:bluejoe2008/solr-sql.git</connection>
+		<developerConnection>scm:git:git@github.com:bluejoe2008/solr-sql.git</developerConnection>
+		<url>https://github.com/bluejoe2008/solr-sql.git</url>
+		<tag>HEAD</tag>
+	</scm>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
 		<dependency>
@@ -40,4 +60,63 @@
 			<version>6.0.0</version>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>

@@ -14,6 +14,16 @@ If you are interested in source codes, manybe you need install a ScalaIDE(http:/
 
 solr-sql uses Maven to manage libary dependencies, it is a normal Maven project.
 
+# import solr-sql
+
+use maven to import solr-sql:
+
+	<dependency>
+	  <groupId>com.github.bluejoe2008</groupId>
+	  <artifactId>solr-sql</artifactId>
+	  <version>0.9</version>
+	</dependency>
+
 # JDBC client code
 
 example code:
@@ -70,5 +80,30 @@ this defines a custom table named 'docs', several arguments can be defined in th
 * columnMapping: comma seperated column mappings, each column mapping is describled in format 'columnName->field_name_in_solr_document', e.g. 'name->name_s, age->age_i'
 * pageSize: solr-sql does not retrieve all results on querying, for example, it only retrieves first 50 results, if the sql engine requests for more, it retrieves for next 50 results. pageSize defines the size of each query, default value is 50.
 
+# run tests
 
+https://github.com/bluejoe2008/solr-sql/blob/master/src/java/test/SolrSqlQueryTest.java shows how to connect to a JDBC source of solr.
+
+https://github.com/bluejoe2008/solr-sql/blob/master/src/java/test/SqlTranslatorTest.java tests if the translation from SQL filters to Solr filters is right, like:
+
+	Assert.assertEquals("age_i:{20 TO *}",
+		trans("select * from docs where age>20"));
+		
+# SqlFilter2SolrFilterTranslator
+
+a SqlFilter2SolrFilterTranslator translates a SQL filter to a Solr filter. a SQL filter is represented by a Calcite RexNode object, and a solr filter is represented by a SolrFilter object. There are serveral SolrFilters defined in this project:
+
+* AndSolrFilter
+* NotSolrFilter
+* OrSolrFilter
+* GtSolrFilter
+* NotNullSolrFilter
+* IsNullSolrFilter
+* EqualsSolrFilter
+* LikeSolrFilter
+* NotEqualsSolrFilter
+* GeSolrFilter
+* LeSolrFilter
+* LtSolrFilter
+* UnrecognizedSolrFilter
 

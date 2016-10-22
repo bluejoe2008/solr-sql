@@ -4,6 +4,8 @@ solr-sql provides sql interfaces for solr cloud(http://lucene.apache.org/solr/),
 
 On the same time, solr-sql is an Apache Calcite(see http://calcite.apache.org) adapter for solr.
 
+<img src="https://github.com/bluejoe2008/solr-sql/blob/master/docs/solr-sql-arch.jpg?raw=true" width=500/>
+
 # about project
 
 solr-sql is written in Scala, which generates JVM byte codes like Java.

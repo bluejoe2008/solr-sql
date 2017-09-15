@@ -1,4 +1,4 @@
-中文版: https://github.com/bluejoe2008/solr-sql/blob/master/README_CN.md)
+中文版: https://github.com/bluejoe2008/solr-sql/blob/master/README_CN.md
 
 # solr-sql
 

@@ -27,7 +27,7 @@ use maven to import solr-sql:
 	<dependency>
 	  <groupId>com.github.bluejoe2008</groupId>
 	  <artifactId>solr-sql</artifactId>
-	  <version>0.9</version>
+	  <version>0.9.1</version>
 	</dependency>
 
 # JDBC client code

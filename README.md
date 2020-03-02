@@ -1,5 +1,3 @@
-中文版: https://github.com/bluejoe2008/solr-sql/blob/master/README_CN.md
-
 # solr-sql
 
 solr-sql provides sql interfaces for solr cloud(http://lucene.apache.org/solr/), by which developers can operate on solr cloud via JDBC protocols.
@@ -27,7 +25,7 @@ use maven to import solr-sql:
 	<dependency>
 	  <groupId>com.github.bluejoe2008</groupId>
 	  <artifactId>solr-sql</artifactId>
-	  <version>0.9</version>
+	  <version>0.9.1</version>
 	</dependency>
 
 # JDBC client code
